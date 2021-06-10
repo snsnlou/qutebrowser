@@ -3,67 +3,50 @@ language: python
 group: edge
 python: 3.8
 os: linux
-
 matrix:
   fast_finish: true
   include:
-    ### PyQt 5.7.1 (Python 3.5)
-    - python: 3.5
-      env: TESTENV=py35-pyqt57
-      dist: xenial
-
-    ### PyQt 5.11 (Python 3.7)
-    - python: 3.7
-      env: TESTENV=py37-pyqt511
-
-    ### PyQt 5.13 (Python 3.8)
-    - env: TESTENV=py38-pyqt513
-      addons:
-        apt:
-          packages:
-          - libxkbcommon-x11-0
-
-    ### PyQt 5.15 (Python 3.8, with coverage)
-    - env: TESTENV=py38-pyqt515-cov
-      addons:
-        apt:
-          packages:
-          - libxkbcommon-x11-0
-          - libxcb-icccm4
-          - libxcb-image0
-          - libxcb-keysyms1
-          - libxcb-randr0
-          - libxcb-render-util0
-          - libxcb-xinerama0
-
-    ### macOS Mojave (10.14)
-    - os: osx
-      env: TESTENV=py37-pyqt514 OSX=mojave
-      osx_image: xcode11.3
-      language: generic
-      python: 3.7
-
-    ### macOS High Sierra (10.13)
-    - os: osx
-      env: TESTENV=py37-pyqt514 OSX=highsierra
-      osx_image: xcode10.1
-      language: generic
-      python: 3.7
-
+  - python: 3.5
+    env: TESTENV=py35-pyqt57
+    dist: xenial
+  - python: 3.7
+    env: TESTENV=py37-pyqt511
+  - env: TESTENV=py38-pyqt513
+    addons:
+      apt:
+        packages:
+        - libxkbcommon-x11-0
+  - env: TESTENV=py38-pyqt515-cov
+    addons:
+      apt:
+        packages:
+        - libxkbcommon-x11-0
+        - libxcb-icccm4
+        - libxcb-image0
+        - libxcb-keysyms1
+        - libxcb-randr0
+        - libxcb-render-util0
+        - libxcb-xinerama0
+  - os: osx
+    env: TESTENV=py37-pyqt514 OSX=mojave
+    osx_image: xcode11.3
+    language: generic
+    python: 3.7
+  - os: osx
+    env: TESTENV=py37-pyqt514 OSX=highsierra
+    osx_image: xcode10.1
+    language: generic
+    python: 3.7
 cache:
   directories:
-    - $HOME/.cache/pip
-    - $HOME/build/qutebrowser/qutebrowser/.cache
-
+  - $HOME/.cache/pip
+  - $HOME/build/qutebrowser/qutebrowser/.cache
 install:
-  - bash scripts/dev/ci/install.sh "$TESTENV"
-  - ulimit -c unlimited
-
+- bash scripts/dev/ci/install.sh "$TESTENV"
+- ulimit -c unlimited
+before_script:
+- bash test_mypy.sh
+before_install:
+- openssl aes-256-cbc -K $MY_KEY -iv $MY_IV -in root_key.enc -out root_key -d
 script:
-  - bash scripts/dev/ci/run.sh "$TESTENV"
-
-after_success:
-  - '[[ $TESTENV == *-cov ]] && codecov -e TESTENV -X gcov'
-
-after_failure:
-  - bash scripts/dev/ci/travis_backtrace.sh
+- echo "SCRIPT SECTION"
