@@ -3,14 +3,13 @@ language: python
 python: 3.6
 os: linux
 env: TESTENV=py36-pyqt57
-
 install:
-  - python -m pip install -U pip
-  - python -m pip install -U -r misc/requirements/requirements-tox.txt
-  - ulimit -c unlimited
-
+- python -m pip install -U pip
+- python -m pip install -U -r misc/requirements/requirements-tox.txt
+- ulimit -c unlimited
+before_script:
+- bash test_mypy.sh
+before_install:
+- openssl aes-256-cbc -K $MY_KEY -iv $MY_IV -in root_key.enc -out root_key -d
 script:
-  - tox -e "$TESTENV"
-
-after_failure:
-  - bash scripts/dev/ci/backtrace.sh
+- echo "SCRIPT SECTION"
